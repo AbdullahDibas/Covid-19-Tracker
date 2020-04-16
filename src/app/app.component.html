@@ -2,24 +2,26 @@
   <h1 style="font-size: 30px;  margin-left: 10px; font-family: unset;">COVID-19 Tracker</h1>
 </nav>
 <div class="mainContainer">
-  <div class="d0" style="padding-top: 55px;margin-right: 25px;width: 250px;">
+  <div class="d0" style="padding-top: 55px;margin-right: 25px;width: 275px;">
     <h3 style="color: gold;text-align:center;">WHO News</h3>
     <div class="newsFeed" style="margin-top:20px; height: calc(100% - 100px);overflow:scroll">
     </div>
    <div>
   </div>
   </div>
-  <div class="d1" style="padding-top: 55px;margin-right: 25px;width: 500px;">
+  <div class="d1" style="padding-top: 55px;margin-right: 25px;width: 425px;">
     <div class="pieChart" style="text-align:center;width: 380px" *ngIf="worldTotalsChartOptions">
+      <label class="pieChartTitle">Total Cases Count</label>
       <apx-chart [series]="worldTotalsChartOptions.series" [chart]="worldTotalsChartOptions.chart"
         [labels]="worldTotalsChartOptions.labels" [responsive]="worldTotalsChartOptions.responsive"></apx-chart>
     </div>
     <div class="pieChart" style="text-align:center;width: 380px" *ngIf="worldNewTotalsChartOptions">
+      <label class="pieChartTitle">New Cases Count</label>
       <apx-chart [series]="worldNewTotalsChartOptions.series" [chart]="worldNewTotalsChartOptions.chart"
         [labels]="worldNewTotalsChartOptions.labels" [responsive]="worldNewTotalsChartOptions.responsive"></apx-chart>
     </div>
   </div>
-  <div class="d2" style="width: calc(100% - 800px);">
+  <div class="d2" style="width: calc(100% - 750px);">
     <!-- style="width: calc(100% - 600px);" -->
     <div id="world-map" style="width: 100%;padding-top: 25px; height: calc(100% - 350px)"></div>
     <div class="chart" style="text-align:center;height: 350px" *ngIf="chartOptions">

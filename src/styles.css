@@ -43,3 +43,7 @@ nav{
   ::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
+
+  ::-webkit-scrollbar-corner{
+    background:black; 
+  }

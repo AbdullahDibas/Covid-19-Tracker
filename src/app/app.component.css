@@ -13,3 +13,8 @@
     margin: auto;
     margin-bottom: 50px;
 }
+
+.pieChartTitle{
+   color: gold;    
+   font-size: 25px;
+}

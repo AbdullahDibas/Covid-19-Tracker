@@ -109,10 +109,23 @@ $.ajax(RSS_URL, {
       .find("item")
       .each(function() {
         const el = $(this);
+ 
+        var imageUrl : string = '';
+
+        if(el.find("description").text().indexOf("<img") > -1){
+          console.log("images");
+          
+          var matches =  el.text().match(/src="([^"]+)"/g);
+
+          if(matches && matches[0]){
+            var imgSource = matches[0].toString().substring(5, matches[0].toString().length - 2);
+            imageUrl = `<img src="${imgSource}" alt="" style="width:100%; height:150px;">`;
+          }
+        }
 
         const template = `
           <article style="margin-left:10px; margin-right:10px;">
-            <img src="${el.find("link").text()}/image/large.png" alt="">
+            ${imageUrl}
               <a style = "color: white; font-size:12px;" href="${el
                 .find("link")
                 .text()}" target="_blank" rel="noopener">
@@ -260,7 +273,7 @@ $.ajax(RSS_URL, {
       series: [this.worldTotals.TotalConfirmed, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],//[13, 55, 13, 43, 22],
       chart: {
         width: 380,
-        type: "donut"
+        type: "donut"      
       },
       labels: ["Total Confirmed", "Total Recovered", "Totatl Deaths"],
       responsive: [
