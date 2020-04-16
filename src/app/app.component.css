@@ -1,0 +1,15 @@
+/* .chart1, .chart2{
+    background-color: chartreuse;
+}  */
+
+ .d0, .d1, .d2{
+    float: left; 
+    background-color: black;
+    border-radius: 25px;
+    height:100%;
+} 
+
+.pieChart{
+    margin: auto;
+    margin-bottom: 50px;
+}
