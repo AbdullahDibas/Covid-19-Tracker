@@ -11,12 +11,12 @@
   </div>
   <div class="d1" style="padding-top: 55px;margin-right: 25px;width: 425px;">
     <div class="pieChart" style="text-align:center;width: 380px" *ngIf="worldTotalsChartOptions">
-      <label class="pieChartTitle">Total Cases Count</label>
+      <h3 class="pieChartTitle" style="color: gold;text-align:center;">Total Cases Count</h3>
       <apx-chart [series]="worldTotalsChartOptions.series" [chart]="worldTotalsChartOptions.chart"
         [labels]="worldTotalsChartOptions.labels" [responsive]="worldTotalsChartOptions.responsive"></apx-chart>
     </div>
     <div class="pieChart" style="text-align:center;width: 380px" *ngIf="worldNewTotalsChartOptions">
-      <label class="pieChartTitle">New Cases Count</label>
+      <h3 class="pieChartTitle" style="color: gold;text-align:center;">New Cases Count</h3>
       <apx-chart [series]="worldNewTotalsChartOptions.series" [chart]="worldNewTotalsChartOptions.chart"
         [labels]="worldNewTotalsChartOptions.labels" [responsive]="worldNewTotalsChartOptions.responsive"></apx-chart>
     </div>

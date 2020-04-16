@@ -70,75 +70,55 @@ export class AppComponent implements OnInit {
     this.getCountriesConfirmedCases();
 
     this._covidDataService.getWHONewsFeed().subscribe(res => {
-     console.log(res);
-   });
-
-    // try {
-
-    //   const fetch = require('node-fetch');
-
-    //   const RSS_URL = `https://www.who.int/rss-feeds/news-english.xml`;
-
-    //   fetch(RSS_URL)
-    //     .then(response => {
-    //       response.text();
-    //     })
-    //     .then(str => {
-    //       new window.DOMParser().parseFromString(str, "text/xml");
-    //     })
-    //     .then(data => {
-    //       console.log(data);
-    //     })
-    // }
-    // catch (e) {
-    //   console.log(e);
-
-    // }
+      console.log(res);
+    });
 
     const RSS_URL = `https://www.who.int/rss-feeds/news-english.xml`;
 
-$.ajax(RSS_URL, {
-  accepts: {
-    xml: "application/rss+xml"
-  },
+    $.ajax(RSS_URL, {
+      accepts: {
+        xml: "application/rss+xml"
+      },
 
-  dataType: "xml",
+      dataType: "xml",
 
-  success: function(data) {
-    $(data)
-      .find("item")
-      .each(function() {
-        const el = $(this);
- 
-        var imageUrl : string = '';
+      success: function (data) {
+        $(data)
+          .find("item")
+          .each(function () {
+            const el = $(this);
 
-        if(el.find("description").text().indexOf("<img") > -1){
-          console.log("images");
-          
-          var matches =  el.text().match(/src="([^"]+)"/g);
+            if (el.find("description").text().indexOf("covid") > -1 || el.find("description").text().indexOf("corona") > -1) {
+              var imageUrl: string = '';
 
-          if(matches && matches[0]){
-            var imgSource = matches[0].toString().substring(5, matches[0].toString().length - 2);
-            imageUrl = `<img src="${imgSource}" alt="" style="width:100%; height:150px;">`;
-          }
-        }
+              if (el.find("description").text().indexOf("<img") > -1) {
+                console.log("images");
 
-        const template = `
+                var matches = el.text().match(/src="([^"]+)"/g);
+
+                if (matches && matches[0]) {
+                  var imgSource = matches[0].toString().substring(5, matches[0].toString().length - 2);
+                  imageUrl = `<img src="${imgSource}" alt="" style="width:100%; height:150px;">`;
+                }
+              }
+
+              const template = `
           <article style="margin-left:10px; margin-right:10px;">
             ${imageUrl}
               <a style = "color: white; font-size:12px;" href="${el
-                .find("link")
-                .text()}" target="_blank" rel="noopener">
+                  .find("link")
+                  .text()}" target="_blank" rel="noopener">
                 ${el.find("title").text()}
               </a>
               <hr style="background-color:gold;">
           </article>
         `;
 
-        $(".newsFeed").append(template);
-      });
-  }
-});
+              $(".newsFeed").append(template);
+            }
+          });
+      }
+    });
 
   }
 
@@ -149,14 +129,13 @@ $.ajax(RSS_URL, {
         series: {
           regions: [{
             values: this.countriesConfirmedCases,
-            // scale: ['#C8EEFF', '#0071A4'],
             scale: ['#EAFAF1', '#6E2C00'],
             normalizeFunction: 'polynomial'
           }]
         },
-        // onRegionTipShow: function(e, el, code){
-        //   el.html(el.html()+' (GDP - '+gdpData[code]+')');
-        // },
+        onRegionTipShow: function(e, el, code){
+          el.html(el.html()+' (Confirmed Cases - '+ this.countriesConfirmedCases[code]+')');
+        }.bind(this),
         backgroundColor: 'black',
         regionsSelectable: true,
         regionsSelectableOne: true,
@@ -273,7 +252,7 @@ $.ajax(RSS_URL, {
       series: [this.worldTotals.TotalConfirmed, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],//[13, 55, 13, 43, 22],
       chart: {
         width: 380,
-        type: "donut"      
+        type: "donut"
       },
       labels: ["Total Confirmed", "Total Recovered", "Totatl Deaths"],
       responsive: [
