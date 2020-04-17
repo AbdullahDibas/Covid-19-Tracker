@@ -29,8 +29,7 @@
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2",
     "express":"*",
-    "body-parser":"*",
-    "bcrypt": "^0.8.5"
+    "body-parser":"*"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.901.0",
