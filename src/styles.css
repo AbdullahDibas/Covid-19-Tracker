@@ -9,6 +9,10 @@ body{
     margin:0;
 }
 
+svg{
+  touch-action: auto;  
+}
+
 .jvectormap-container svg{
  height: 100%;    
 }
