@@ -11,7 +11,8 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive,
   ApexOptions,
-  ApexStroke
+  ApexStroke,
+  ApexYAxis
 } from "ng-apexcharts";
 import { DatePipe } from '@angular/common';
 import { Country } from './models/Country';
@@ -22,6 +23,7 @@ export type ChartOptions = {
   series: ApexAxisChartSeries;
   colors: string[];
   chart: ApexChart;
+  yaxis: ApexYAxis;
   xaxis: ApexXAxis;
   title: ApexTitleSubtitle;
 };
@@ -52,6 +54,7 @@ export class AppComponent implements OnInit {
   public worldNewTotalsChartOptions: Partial<PieChartOptions>;
   covidDataSVC: CovidDataService;
   selectedCountryName = '';
+  selectedCountryDisplayName = '';
   countries: Country[];
   countriesSummary: CountrySummary;
   countriesConfirmedCases: { [code: string]: number } = {};
@@ -193,6 +196,7 @@ export class AppComponent implements OnInit {
       if (this.countries) {
         let country: Country = this.countries.filter(c => c.ISO2 == code)[0];
 
+        this.selectedCountryDisplayName = country.Country;
         this.getCountryCovidData(country.Slug);
       }
     }
@@ -232,10 +236,15 @@ export class AppComponent implements OnInit {
         width: "100%",
         //"line" | "area" | "bar" | "histogram" | "pie" | "donut" | "radialBar" | "scatter" | "bubble" | "heatmap" | "candlestick" | "radar" | "polarArea" | "rangeBar";
         type: "line"
-      }/*,
+      },
       title: {
-        text: "My First Angular Chart"
-      }*/,
+        text: "COVID-19 Growth - " + this.selectedCountryDisplayName ,
+        offsetY: 25,
+      },
+      yaxis:{
+        title:{
+          text: "Cases Count"}
+      },
       xaxis: {
         tickAmount: 30,
         type: "datetime",
