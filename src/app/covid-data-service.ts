@@ -15,8 +15,8 @@ export class CovidDataService {
 
   constructor(private httpClientModule: HttpClient) { }
 
-  getWHONewsFeed(): Observable<string> {
-    this._getCountryCovidData = `https://www.who.int/rss-feeds/news-english.xml`;
+  getWHONewsFeed(): Observable<any> {
+    this._getCountryCovidData = `http://news.google.com/news?q=covid-19&hl=en-US&sort=date&gl=US&num=100&output=rss`;
 
     var headers: { [name: string]: string } = {};
 
@@ -25,7 +25,12 @@ export class CovidDataService {
 
     let options = { headers: new HttpHeaders(headers) };
 
-    return this.httpClientModule.get<string>(this._getCountryCovidData, options);
+    const requestOptions: Object = {
+      observe: "body",
+      responseType: "text"
+    };
+
+    return this.httpClientModule.get<any>(this._getCountryCovidData, requestOptions);
   }
 
   getWorldTotals(): Observable<WorldTotals> {

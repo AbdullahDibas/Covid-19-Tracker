@@ -81,9 +81,9 @@ export class AppComponent implements OnInit {
     //   console.log(res);
     // });
 
-    const RSS_URL = `https://www.who.int/rss-feeds/news-english.xml`;
-
+    var RSS_URL = `https://www.who.int/rss-feeds/news-english.xml`;
     $.ajax(RSS_URL, {
+
       accepts: {
         xml: "application/rss+xml"
       },
