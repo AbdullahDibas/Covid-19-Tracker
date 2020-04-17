@@ -109,12 +109,12 @@ export class AppComponent implements OnInit {
               const template = `
           <article style="margin-left:10px; margin-right:10px;">
             ${imageUrl}
-              <a style = "color: white; font-size:14px;" href="${el
+              <a style = "color: white; font-size:14px;text-decoration: none;" href="${el
                   .find("link")
                   .text()}" target="_blank" rel="noopener">
                 ${el.find("title").text()}
               </a>
-              <hr style="background-color:gold;">
+              <hr style="border-color:gold;">
           </article>
         `;
 
