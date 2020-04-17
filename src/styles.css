@@ -4,6 +4,7 @@
 
 body{
     background-color: rgb(35, 37, 39);
+    font-family: Helvetica,Arial,sans-serif;
 }
 
 .jvectormap-container svg{
@@ -17,11 +18,25 @@ html, body{
 
 nav{
   height: 50px;
+  background-color: gold; 
+  padding-left: 10px;
+  padding-top: 5px; 
+  padding-bottom: 10px;
+}
+
+h1{
+  font-size: 30px; 
+  font-family: unset;
+}
+
+h3{
+  color: gold;
+  text-align:center;
 }
 
 .mainContainer{
     height: calc(100% - 50px);
-    padding: 25px;
+    padding: 25px 12.5px;
 }
 
 /* width */

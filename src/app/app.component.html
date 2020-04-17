@@ -1,32 +1,46 @@
-<nav style="background-color: gold; padding-top: 5px; padding-bottom: 10px;">
-  <h1 style="font-size: 30px;  margin-left: 10px; font-family: unset;">COVID-19 Tracker</h1>
+<nav>
+  <h1>COVID-19 Tracker</h1>
 </nav>
 <div class="mainContainer">
-  <div class="d0" style="padding-top: 55px;margin-right: 25px;width: 275px;">
-    <h3 style="color: gold;text-align:center;">WHO News</h3>
-    <div class="newsFeed" style="margin-top:20px; height: calc(100% - 100px);overflow:scroll">
-    </div>
-   <div>
+  <div class="d0">
+    <h3>WHO News</h3>
+    <div class="newsFeed"></div>
   </div>
-  </div>
-  <div class="d1" style="padding-top: 55px;margin-right: 25px;width: 425px;">
-    <div class="pieChart" style="text-align:center;width: 380px" *ngIf="worldTotalsChartOptions">
-      <h3 class="pieChartTitle" style="color: gold;text-align:center;">Total Cases Count</h3>
-      <apx-chart [series]="worldTotalsChartOptions.series" [chart]="worldTotalsChartOptions.chart"
-        [labels]="worldTotalsChartOptions.labels" [responsive]="worldTotalsChartOptions.responsive"></apx-chart>
+  <div class="d1">
+    <div class="pieChart" *ngIf="worldTotalsChartOptions">
+      <h3>Total Cases Count</h3>
+      <apx-chart 
+        [series]="worldTotalsChartOptions.series"
+        [chart]="worldTotalsChartOptions.chart"
+        [labels]="worldTotalsChartOptions.labels"
+        [responsive]="worldTotalsChartOptions.responsive"
+        [legend]="worldTotalsChartOptions.legend" 
+        [plotOptions]="worldTotalsChartOptions.options"
+        [colors]="worldTotalsChartOptions.colors"
+        [stroke]="worldTotalsChartOptions.stroke"></apx-chart>
     </div>
-    <div class="pieChart" style="text-align:center;width: 380px" *ngIf="worldNewTotalsChartOptions">
-      <h3 class="pieChartTitle" style="color: gold;text-align:center;">New Cases Count</h3>
-      <apx-chart [series]="worldNewTotalsChartOptions.series" [chart]="worldNewTotalsChartOptions.chart"
-        [labels]="worldNewTotalsChartOptions.labels" [responsive]="worldNewTotalsChartOptions.responsive"></apx-chart>
+    <div class="pieChart" *ngIf="worldNewTotalsChartOptions">
+      <h3>New Cases Count</h3>
+      <apx-chart 
+        [series]="worldNewTotalsChartOptions.series" 
+        [chart]="worldNewTotalsChartOptions.chart"
+        [labels]="worldNewTotalsChartOptions.labels"  
+        [legend]="worldNewTotalsChartOptions.legend" 
+        [responsive]="worldNewTotalsChartOptions.responsive"
+        [plotOptions]="worldNewTotalsChartOptions.options"
+        [colors]="worldNewTotalsChartOptions.colors"
+        [stroke]="worldNewTotalsChartOptions.stroke"></apx-chart>
     </div>
   </div>
-  <div class="d2" style="width: calc(100% - 750px);">
-    <!-- style="width: calc(100% - 600px);" -->
-    <div id="world-map" style="width: 100%;padding-top: 25px; height: calc(100% - 350px)"></div>
+  <div class="d2">
+    <div id="world-map"></div>
     <div class="chart" style="text-align:center;height: 350px" *ngIf="chartOptions">
-      <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
-        [title]="chartOptions.title"></apx-chart>
+      <apx-chart 
+       [series]="chartOptions.series"
+       [chart]="chartOptions.chart" 
+       [xaxis]="chartOptions.xaxis"
+       [colors]="chartOptions.colors"
+       [title]="chartOptions.title"></apx-chart>
     </div>
   </div>
 </div>

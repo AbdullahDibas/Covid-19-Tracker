@@ -1,20 +1,53 @@
-/* .chart1, .chart2{
-    background-color: chartreuse;
-}  */
+.newsFeed{
+    margin-top: 20px;
+     height: calc(100% - 100px);
+     overflow: scroll;
+}
 
  .d0, .d1, .d2{
     float: left; 
     background-color: black;
     border-radius: 25px;
     height:100%;
+    padding-top: 55px;
+    margin:0 12.5px;
 } 
+
+.d0, .d1{
+    width: 275px;
+}
+
+.d2{
+    width: calc(100% - 625px);
+}
+
+#world-map{
+    width: 100%;
+    height: calc(100% - 350px);
+}
 
 .pieChart{
     margin: auto;
     margin-bottom: 50px;
+    text-align:center;
+    width: 90%
 }
 
-/* .pieChartTitle{
-   color: gold;    
-   font-size: 25px;
-} */
+@media only screen and (max-width: 700px) {
+    .d0, .d1 , .d2{
+        width: 100%;
+        border-radius: 0px;
+        margin: 10px 0;
+    }
+    .d0{
+        min-height: 500px;
+     }
+    
+      .d1{
+         height: auto;
+      }
+    
+      .d2 {
+        min-height: 700px;
+      }
+  }

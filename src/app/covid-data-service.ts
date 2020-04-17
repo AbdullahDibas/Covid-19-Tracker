@@ -46,12 +46,8 @@ export class CovidDataService {
     return this.httpClientModule.get<Country[]>(this._getCountryCovidData, this.getRequestOptions());
   }
 
-  getCountryCovidData(countryName: string, date: string): Observable<CountryCovidData[]> {
+  getCountryCovidData(countryName: string): Observable<CountryCovidData[]> {
     let data: CountryCovidData[] = [];
-
-    this._getCountryCovidData = `https://api.covid19api.com/live/country/${countryName}/status/confirmed/date/${date}`;
-    
-    this._getCountryCovidData = `https://api.covid19api.com/dayone/country/${countryName}`;
 
     this._getCountryCovidData = `https://api.covid19api.com/total/country/${countryName}`;
 

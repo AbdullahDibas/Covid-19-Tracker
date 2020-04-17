@@ -9,7 +9,9 @@ import {
   ApexTitleSubtitle,
   NgApexchartsModule,
   ApexNonAxisChartSeries,
-  ApexResponsive
+  ApexResponsive,
+  ApexOptions,
+  ApexStroke
 } from "ng-apexcharts";
 import { DatePipe } from '@angular/common';
 import { Country } from './models/Country';
@@ -18,6 +20,7 @@ import { CountrySummary } from './models/CountrySummary';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
+  colors: string[];
   chart: ApexChart;
   xaxis: ApexXAxis;
   title: ApexTitleSubtitle;
@@ -27,7 +30,11 @@ export type PieChartOptions = {
   series: ApexNonAxisChartSeries;
   chart: ApexChart;
   responsive: ApexResponsive[];
+  colors?: string[];
+  stroke: ApexStroke;
+  legend: any;
   labels: any;
+  options: ApexOptions;
 };
 
 declare var jQuery: any
@@ -53,11 +60,9 @@ export class AppComponent implements OnInit {
     this.covidDataSVC = _covidDataService;
     _covidDataService.getCountries().subscribe(res => {
       this.countries = res;
-      console.log(this.countries);
     });
     _covidDataService.getWorldTotals().subscribe(res => {
       this.worldTotals = res;
-      console.log(res);
       this.drawWorldTotalsChart();
     })
   }
@@ -69,9 +74,9 @@ export class AppComponent implements OnInit {
   ngAfterViewInit() {
     this.getCountriesConfirmedCases();
 
-    this._covidDataService.getWHONewsFeed().subscribe(res => {
-      console.log(res);
-    });
+    // this._covidDataService.getWHONewsFeed().subscribe(res => {
+    //   console.log(res);
+    // });
 
     const RSS_URL = `https://www.who.int/rss-feeds/news-english.xml`;
 
@@ -92,7 +97,6 @@ export class AppComponent implements OnInit {
               var imageUrl: string = '';
 
               if (el.find("description").text().indexOf("<img") > -1) {
-                console.log("images");
 
                 var matches = el.text().match(/src="([^"]+)"/g);
 
@@ -105,7 +109,7 @@ export class AppComponent implements OnInit {
               const template = `
           <article style="margin-left:10px; margin-right:10px;">
             ${imageUrl}
-              <a style = "color: white; font-size:12px;" href="${el
+              <a style = "color: white; font-size:14px;" href="${el
                   .find("link")
                   .text()}" target="_blank" rel="noopener">
                 ${el.find("title").text()}
@@ -185,7 +189,6 @@ export class AppComponent implements OnInit {
 
   onMapCountrySelected(e: any, code: string, isSelected: boolean, selectedRegions: Array<string>) {
     if (isSelected) {
-      console.log("a region is selected" + code);
 
       if (this.countries) {
         let country: Country = this.countries.filter(c => c.ISO2 == code)[0];
@@ -198,35 +201,29 @@ export class AppComponent implements OnInit {
   getCountryCovidData(selectedCountry: string) {
     this.selectedCountryName = selectedCountry;
 
-    console.log(selectedCountry);
-
     let covidData: CountryCovidData[] = [];
 
-    this._covidDataService.getCountryCovidData(this.selectedCountryName, "2020-04-01T13:13:30Z").subscribe(res => {
+    this._covidDataService.getCountryCovidData(this.selectedCountryName).subscribe(res => {
       covidData = res;
-      console.log(covidData);
-      this.drawChart(selectedCountry, covidData);
+      this.drawChart(covidData);
     });
   }
 
-  private drawChart(countryName: string, covidData: CountryCovidData[]): void {
-    let count: number = 0;
-
-    var array = covidData.map(c => c.Date/*this._datePipe.transform(c.Date, 'MMM d')*/);
+  private drawChart(covidData: CountryCovidData[]): void {
 
     this.chartOptions = {
       series: [
         {
           name: "Confirmed Cases",
-          data: covidData.map(c => c.Confirmed)//[10, 41, 35, 51, 49, 62, 69, 91, 148]          
+          data: covidData.map(c => c.Confirmed)       
         },
         {
           name: "Recovered Cases",
-          data: covidData.map(c => c.Recovered)//[10, 41, 35, 51, 49, 62, 69, 91, 148]
+          data: covidData.map(c => c.Recovered)
         },
         {
           name: "Deaths",
-          data: covidData.map(c => c.Deaths)//[10, 41, 35, 51, 49, 62, 69, 91, 148]
+          data: covidData.map(c => c.Deaths)
         }
       ],
       chart: {
@@ -242,56 +239,91 @@ export class AppComponent implements OnInit {
       xaxis: {
         tickAmount: 30,
         type: "datetime",
-        categories: array //["Jan", "Feb",  "Mar",  "Apr",  "May",  "Jun",  "Jul",  "Aug", "Sep"]
+        categories: covidData.map(c => c.Date)
       }
     };
   }
 
   private drawWorldTotalsChart() {
     this.worldTotalsChartOptions = {
-      series: [this.worldTotals.TotalConfirmed, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],//[13, 55, 13, 43, 22],
+      series: [this.worldTotals.TotalConfirmed, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],
       chart: {
-        width: 380,
-        type: "donut"
+        type: "donut",
+        foreColor: "white"      
       },
       labels: ["Total Confirmed", "Total Recovered", "Totatl Deaths"],
+      stroke: { show: false },
       responsive: [
         {
-          breakpoint: 480,
           options: {
-            chart: {
-              width: 200
-            },
             legend: {
-              position: "bottom"
+              position: "top"
             }
           }
         }
-      ]
+      ],
+      legend: {
+          position: 'bottom',
+          offsetY: 0
+      },
+      options: {
+        dataLabels:{          
+          background:{
+            foreColor:"green"
+          }
+        }
+      }
     };
   }
 
   private drawNewWorldTotalsChart() {
     this.worldNewTotalsChartOptions = {
-      series: [this.countriesSummary.Global.NewConfirmed, this.countriesSummary.Global.NewRecovered, this.countriesSummary.Global.NewDeaths],//[13, 55, 13, 43, 22],
+      series: [this.countriesSummary.Global.NewConfirmed, this.countriesSummary.Global.NewRecovered, this.countriesSummary.Global.NewDeaths],
       chart: {
-        width: 380,
-        type: "donut"
+        width: "100%",
+        type: "donut",
+        foreColor: "white"
       },
       labels: ["New Confirmed", "New Recovered", "New Deaths"],
+      //colors: ['#9C27B0', '#E91E63', '#F44336'],
+      stroke: { show: false },
       responsive: [
         {
           breakpoint: 480,
           options: {
             chart: {
-              width: 200
+              width: "100%"
             },
             legend: {
               position: "bottom"
             }
           }
         }
-      ]
+      ],
+      legend: {
+          position: 'bottom',
+          offsetY: 0
+      },
+      options: {
+        plotOptions:{
+          pie:{
+            donut:{
+              size:"65%",
+              background:"green"
+            }
+          }
+        },
+        dataLabels:{          
+          background:{
+            enabled:true,
+            foreColor:"green"
+          },
+          style: {
+            fontWeight:"bold",
+            colors:["blue", "red", "green"]
+          }
+        }
+      }
     };
   }
 }
