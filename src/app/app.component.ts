@@ -77,19 +77,19 @@ export class AppComponent implements OnInit {
   ngAfterViewInit() {
     this.getCountriesConfirmedCases();
 
-//     if (!('fetch' in window)) {
-//       console.log('Fetch API not found, try including the polyfill');
-//     }
-//     else{
-//       fetch('https://news.google.com/rss/search?q=covid-19&hl=en-US&sort=date&gl=US&num=100&ceid=US:en', {
-//         mode: 'no-cors' // 'cors' by default
-//       }).then(function(response) {
-//         console.log(response.text().then(function(valu){console.log(valu);}));
-//   // Do stuff with the response
-// }).catch(function(error) {
-//   console.log('Looks like there was a problem: \n', error);
-// });
-//     }
+    //     if (!('fetch' in window)) {
+    //       console.log('Fetch API not found, try including the polyfill');
+    //     }
+    //     else{
+    //       fetch('https://news.google.com/rss/search?q=covid-19&hl=en-US&sort=date&gl=US&num=100&ceid=US:en', {
+    //         mode: 'no-cors' // 'cors' by default
+    //       }).then(function(response) {
+    //         console.log(response.text().then(function(valu){console.log(valu);}));
+    //   // Do stuff with the response
+    // }).catch(function(error) {
+    //   console.log('Looks like there was a problem: \n', error);
+    // });
+    //     }
 
     // this._covidDataService.getWHONewsFeed().subscribe(res => {
     //   console.log(res);
@@ -131,7 +131,7 @@ export class AppComponent implements OnInit {
                   .text()}" target="_blank" rel="noopener">
                 ${el.find("title").text()}
               </a>
-              <hr style="border-color:gold;">
+              <hr style="border-color:#ffb700;">
           </article>
         `;
 
@@ -154,8 +154,8 @@ export class AppComponent implements OnInit {
             normalizeFunction: 'polynomial'
           }]
         },
-        onRegionTipShow: function(e, el, code){
-          el.html(el.html()+' (Confirmed Cases - '+ this.countriesConfirmedCases[code]+')');
+        onRegionTipShow: function (e, el, code) {
+          el.html(el.html() + ' (Confirmed Cases - ' + this.countriesConfirmedCases[code] + ')');
         }.bind(this),
         backgroundColor: 'black',
         regionsSelectable: true,
@@ -174,7 +174,7 @@ export class AppComponent implements OnInit {
             cursor: 'pointer'
           },
           selected: {
-            fill: 'yellow'
+            fill: 'red'
           },
           selectedHover: {
           }
@@ -199,8 +199,18 @@ export class AppComponent implements OnInit {
     this._covidDataService.getCountriesSummaries().subscribe(res => {
       this.countriesSummary = res;
       this.countriesSummary.Countries.forEach(c => this.countriesConfirmedCases[c.CountryCode] = c.TotalConfirmed);
-      this.showMap();
-      this.drawNewWorldTotalsChart();
+      if (!this.countriesConfirmedCases["CN"]) {
+          let country: Country = this.countries.filter(c => c.ISO2 == "CN")[0];
+          this._covidDataService.getCountryCovidData(country.Slug).subscribe(res => {
+          this.countriesConfirmedCases["CN"]  = res[res.length - 1].Confirmed;
+          this.showMap();
+          this.drawNewWorldTotalsChart();          
+        });
+      }
+      else{ 
+         this.showMap();
+         this.drawNewWorldTotalsChart();
+      }
     });
   }
 
@@ -209,7 +219,7 @@ export class AppComponent implements OnInit {
 
       if (this.countries) {
         let country: Country = this.countries.filter(c => c.ISO2 == code)[0];
-
+        console.log(country);
         this.selectedCountryDisplayName = country.Country;
         this.getCountryCovidData(country.Slug);
       }
@@ -233,7 +243,7 @@ export class AppComponent implements OnInit {
       series: [
         {
           name: "Confirmed Cases",
-          data: covidData.map(c => c.Confirmed)       
+          data: covidData.map(c => c.Confirmed)
         },
         {
           name: "Recovered Cases",
@@ -247,17 +257,17 @@ export class AppComponent implements OnInit {
       chart: {
         foreColor: "white",
         height: 350,
-        width: "100%",
-        //"line" | "area" | "bar" | "histogram" | "pie" | "donut" | "radialBar" | "scatter" | "bubble" | "heatmap" | "candlestick" | "radar" | "polarArea" | "rangeBar";
+        width: "100%",        
         type: "line"
       },
       title: {
-        text: "COVID-19 Growth - " + this.selectedCountryDisplayName ,
+        text: "COVID-19 Growth - " + this.selectedCountryDisplayName,
         offsetY: 25,
       },
-      yaxis:{
-        title:{
-          text: "Cases Count"}
+      yaxis: {
+        title: {
+          text: "Cases Count"
+        }
       },
       xaxis: {
         tickAmount: 30,
@@ -272,7 +282,7 @@ export class AppComponent implements OnInit {
       series: [this.worldTotals.TotalConfirmed, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],
       chart: {
         type: "donut",
-        foreColor: "white"      
+        foreColor: "white"
       },
       labels: ["Total Confirmed", "Total Recovered", "Totatl Deaths"],
       stroke: { show: false },
@@ -286,13 +296,13 @@ export class AppComponent implements OnInit {
         }
       ],
       legend: {
-          position: 'bottom',
-          offsetY: 0
+        position: 'bottom',
+        offsetY: 0
       },
       options: {
-        dataLabels:{          
-          background:{
-            foreColor:"green"
+        dataLabels: {
+          background: {
+            foreColor: "green"
           }
         }
       }
@@ -308,7 +318,6 @@ export class AppComponent implements OnInit {
         foreColor: "white"
       },
       labels: ["New Confirmed", "New Recovered", "New Deaths"],
-      //colors: ['#9C27B0', '#E91E63', '#F44336'],
       stroke: { show: false },
       responsive: [
         {
@@ -324,26 +333,26 @@ export class AppComponent implements OnInit {
         }
       ],
       legend: {
-          position: 'bottom',
-          offsetY: 0
+        position: 'bottom',
+        offsetY: 0
       },
       options: {
-        plotOptions:{
-          pie:{
-            donut:{
-              size:"65%",
-              background:"green"
+        plotOptions: {
+          pie: {
+            donut: {
+              size: "65%",
+              background: "green"
             }
           }
         },
-        dataLabels:{          
-          background:{
-            enabled:true,
-            foreColor:"green"
+        dataLabels: {
+          background: {
+            enabled: true,
+            foreColor: "green"
           },
           style: {
-            fontWeight:"bold",
-            colors:["blue", "red", "green"]
+            fontWeight: "bold",
+            colors: ["blue", "red", "green"]
           }
         }
       }

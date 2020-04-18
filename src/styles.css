@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://cdn.jsdelivr.net/npm/jvectormap@2.0.4/jquery-jvectormap.css");
-/* @import url("..\\node_modules\\bootstrap\\dist\\css\\bootstrap.css"); */
 
 body{
     background-color: rgb(35, 37, 39);
@@ -24,11 +23,9 @@ html, body{
 
 nav{
   height: 50px;
-  background-color: gold; 
+  background-color:#ffb700; 
   padding-left: 10px;
-  /*padding-top: 5px;  */
   width: 100%;
-  /*padding-bottom: 10px;*/
 }
 
 h1{
@@ -40,13 +37,17 @@ h1{
 }
 
 h3{
-  color: gold;
+  color: #ffb700;
   text-align:center;
   font-size: 25px;
 }
 
+span{
+  font-size: 20px;
+}
+
 .mainContainer{
-    height: calc(100% - 150px);
+    height: calc(100% - 160px);
     padding: 25px 12.5px;
 }
 
