@@ -242,8 +242,8 @@ export class AppComponent implements OnInit {
     this.chartOptions = {
       series: [
         {
-          name: "Confirmed Cases",
-          data: covidData.map(c => c.Confirmed)
+          name: "Active Cases",
+          data: covidData.map(c => c.Confirmed - c.Recovered - c.Deaths)
         },
         {
           name: "Recovered Cases",
@@ -279,12 +279,12 @@ export class AppComponent implements OnInit {
 
   private drawWorldTotalsChart() {
     this.worldTotalsChartOptions = {
-      series: [this.worldTotals.TotalConfirmed, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],
+      series: [this.worldTotals.TotalConfirmed - this.worldTotals.TotalRecovered - this.worldTotals.TotalDeaths, this.worldTotals.TotalRecovered, this.worldTotals.TotalDeaths],
       chart: {
         type: "donut",
         foreColor: "white"
       },
-      labels: ["Total Confirmed", "Total Recovered", "Totatl Deaths"],
+      labels: ["Total Active", "Total Recovered", "Totatl Deaths"],
       stroke: { show: false },
       responsive: [
         {
@@ -311,13 +311,13 @@ export class AppComponent implements OnInit {
 
   private drawNewWorldTotalsChart() {
     this.worldNewTotalsChartOptions = {
-      series: [this.countriesSummary.Global.NewConfirmed, this.countriesSummary.Global.NewRecovered, this.countriesSummary.Global.NewDeaths],
+      series: [this.countriesSummary.Global.NewConfirmed - this.countriesSummary.Global.NewRecovered - this.countriesSummary.Global.NewDeaths , this.countriesSummary.Global.NewRecovered, this.countriesSummary.Global.NewDeaths],
       chart: {
         width: "100%",
         type: "donut",
         foreColor: "white"
       },
-      labels: ["New Confirmed", "New Recovered", "New Deaths"],
+      labels: ["New Active", "New Recovered", "New Deaths"],
       stroke: { show: false },
       responsive: [
         {
