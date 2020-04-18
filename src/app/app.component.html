@@ -2,9 +2,17 @@
   <h1>COVID-19 Tracker</h1>
 </nav>
 <div class="mainContainer">
-  <div class="d0">
-    <h3>WHO News</h3>
-    <div class="newsFeed"></div>
+  <div class="d2">
+    <div id="world-map"></div>
+    <div class="chart" style="text-align:center;height: 350px" *ngIf="chartOptions">
+      <apx-chart 
+       [series]="chartOptions.series"
+       [chart]="chartOptions.chart" 
+       [xaxis]="chartOptions.xaxis"
+       [yaxis]="chartOptions.yaxis"
+       [colors]="chartOptions.colors"
+       [title]="chartOptions.title"></apx-chart>
+    </div>
   </div>
   <div class="d1">
     <div class="pieChart" *ngIf="worldTotalsChartOptions">
@@ -32,16 +40,8 @@
         [stroke]="worldNewTotalsChartOptions.stroke"></apx-chart>
     </div>
   </div>
-  <div class="d2">
-    <div id="world-map"></div>
-    <div class="chart" style="text-align:center;height: 350px" *ngIf="chartOptions">
-      <apx-chart 
-       [series]="chartOptions.series"
-       [chart]="chartOptions.chart" 
-       [xaxis]="chartOptions.xaxis"
-       [yaxis]="chartOptions.yaxis"
-       [colors]="chartOptions.colors"
-       [title]="chartOptions.title"></apx-chart>
-    </div>
+  <div class="d0">
+    <h3>WHO News</h3>
+    <div class="newsFeed"></div>
   </div>
 </div>

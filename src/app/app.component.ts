@@ -77,6 +77,20 @@ export class AppComponent implements OnInit {
   ngAfterViewInit() {
     this.getCountriesConfirmedCases();
 
+//     if (!('fetch' in window)) {
+//       console.log('Fetch API not found, try including the polyfill');
+//     }
+//     else{
+//       fetch('https://news.google.com/rss/search?q=covid-19&hl=en-US&sort=date&gl=US&num=100&ceid=US:en', {
+//         mode: 'no-cors' // 'cors' by default
+//       }).then(function(response) {
+//         console.log(response.text().then(function(valu){console.log(valu);}));
+//   // Do stuff with the response
+// }).catch(function(error) {
+//   console.log('Looks like there was a problem: \n', error);
+// });
+//     }
+
     // this._covidDataService.getWHONewsFeed().subscribe(res => {
     //   console.log(res);
     // });
