@@ -3,43 +3,35 @@
 </nav>
 <div class="mainContainer">
   <div class="d2">
-    <div id="world-map"></div>
-    <div class="chart" style="text-align:center;height: 350px" *ngIf="chartOptions">
-      <apx-chart 
-       [series]="chartOptions.series"
-       [chart]="chartOptions.chart" 
-       [xaxis]="chartOptions.xaxis"
-       [yaxis]="chartOptions.yaxis"
-       [colors]="chartOptions.colors"
-       [title]="chartOptions.title"></apx-chart>
+    <div id="countryNewsSideBar" class="countryNewsSideBar collapsed" style="float: left; height: 100%;">
+      <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">×</a>
+      <div class="countryNewsFeed"></div>
+    </div>
+    <div id="mapDiv" class="expanded" style="float: left; height: 100%;">
+      <button class="openbtn" (click)="openNav($event)" style="visibility:hidden">☰ Country News</button>
+      <div id="world-map"></div>
+      <div class="chart" style="text-align:center;height: 350px" *ngIf="chartOptions">
+        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+          [yaxis]="chartOptions.yaxis" [colors]="chartOptions.colors" [title]="chartOptions.title"></apx-chart>
+      </div>
     </div>
   </div>
   <div class="d1">
-    <div class ="pieChartsContainer">
+    <div class="pieChartsContainer">
       <div class="pieChart" *ngIf="worldTotalsChartOptions">
         <h3>Total Cases Count</h3>
-         <apx-chart 
-           [series]="worldTotalsChartOptions.series"
-           [chart]="worldTotalsChartOptions.chart"
-           [labels]="worldTotalsChartOptions.labels"
-           [responsive]="worldTotalsChartOptions.responsive"
-           [legend]="worldTotalsChartOptions.legend" 
-           [plotOptions]="worldTotalsChartOptions.options"
-           [colors]="worldTotalsChartOptions.colors"
-        [stroke]="worldTotalsChartOptions.stroke"></apx-chart>
-    </div>
-    <div class="pieChart" *ngIf="worldNewTotalsChartOptions">
-      <h3>New Cases Count</h3>
-      <apx-chart 
-        [series]="worldNewTotalsChartOptions.series" 
-        [chart]="worldNewTotalsChartOptions.chart"
-        [labels]="worldNewTotalsChartOptions.labels"  
-        [legend]="worldNewTotalsChartOptions.legend" 
-        [responsive]="worldNewTotalsChartOptions.responsive"
-        [plotOptions]="worldNewTotalsChartOptions.options"
-        [colors]="worldNewTotalsChartOptions.colors"
-        [stroke]="worldNewTotalsChartOptions.stroke"></apx-chart>
-    </div>
+        <apx-chart [series]="worldTotalsChartOptions.series" [chart]="worldTotalsChartOptions.chart"
+          [labels]="worldTotalsChartOptions.labels" [responsive]="worldTotalsChartOptions.responsive"
+          [legend]="worldTotalsChartOptions.legend" [plotOptions]="worldTotalsChartOptions.options"
+          [colors]="worldTotalsChartOptions.colors" [stroke]="worldTotalsChartOptions.stroke"></apx-chart>
+      </div>
+      <div class="pieChart" *ngIf="worldNewTotalsChartOptions">
+        <h3>New Cases Count</h3>
+        <apx-chart [series]="worldNewTotalsChartOptions.series" [chart]="worldNewTotalsChartOptions.chart"
+          [labels]="worldNewTotalsChartOptions.labels" [legend]="worldNewTotalsChartOptions.legend"
+          [responsive]="worldNewTotalsChartOptions.responsive" [plotOptions]="worldNewTotalsChartOptions.options"
+          [colors]="worldNewTotalsChartOptions.colors" [stroke]="worldNewTotalsChartOptions.stroke"></apx-chart>
+      </div>
     </div>
   </div>
   <div class="d0">

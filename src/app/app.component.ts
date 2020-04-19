@@ -18,6 +18,7 @@ import { DatePipe } from '@angular/common';
 import { Country } from './models/Country';
 import { WorldTotals } from './models/WorldTotals';
 import { CountrySummary } from './models/CountrySummary';
+import { CountryNews } from './models/CountryNews';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -52,49 +53,45 @@ export class AppComponent implements OnInit {
   public chartOptions: Partial<ChartOptions>;
   public worldTotalsChartOptions: Partial<PieChartOptions>;
   public worldNewTotalsChartOptions: Partial<PieChartOptions>;
+
+  //#region Declarations
   covidDataSVC: CovidDataService;
-  selectedCountryName = '';
-  selectedCountryDisplayName = '';
+  selectedCountry: Country;
   countries: Country[];
+  selectedCountryCovidData: CountryCovidData[] = [];
   countriesSummary: CountrySummary;
   countriesConfirmedCases: { [code: string]: number } = {};
   worldTotals: WorldTotals;
-  constructor(private _covidDataService: CovidDataService, private _datePipe: DatePipe) {
+  selectedCountryNews: CountryNews;
+  isCountryNewsExpanded: boolean = false;
+  //#endregion
+
+  constructor(private _covidDataService: CovidDataService) {
+    this.selectedCountry = { Slug: "jordan", ISO2: "JO", Country: "Jordan" };
+
     this.covidDataSVC = _covidDataService;
-    _covidDataService.getCountries().subscribe(res => {
-      this.countries = res;
-    });
-    _covidDataService.getWorldTotals().subscribe(res => {
-      this.worldTotals = res;
-      this.drawWorldTotalsChart();
-    })
   }
 
   ngOnInit(): void {
-    this.getCountryCovidData("jordan");
+    this.covidDataSVC.getCountries().subscribe(res => this.countries = res);
+
+    this.covidDataSVC.getWorldTotals().subscribe(res => {
+
+      this.worldTotals = res;
+
+      this.drawWorldTotalsChart();
+    });
+
+    this.getCountryCovidData();
   }
 
   ngAfterViewInit() {
     this.getCountriesConfirmedCases();
 
-    //     if (!('fetch' in window)) {
-    //       console.log('Fetch API not found, try including the polyfill');
-    //     }
-    //     else{
-    //       fetch('https://news.google.com/rss/search?q=covid-19&hl=en-US&sort=date&gl=US&num=100&ceid=US:en', {
-    //         mode: 'no-cors' // 'cors' by default
-    //       }).then(function(response) {
-    //         console.log(response.text().then(function(valu){console.log(valu);}));
-    //   // Do stuff with the response
-    // }).catch(function(error) {
-    //   console.log('Looks like there was a problem: \n', error);
-    // });
-    //     }
+    this.initializeWHOLatestNews();
+  }
 
-    // this._covidDataService.getWHONewsFeed().subscribe(res => {
-    //   console.log(res);
-    // });
-
+  private initializeWHOLatestNews(): void {
     var RSS_URL = `https://www.who.int/rss-feeds/news-english.xml`;
     $.ajax(RSS_URL, {
 
@@ -124,13 +121,13 @@ export class AppComponent implements OnInit {
               }
 
               const template = `
-          <article style="margin-left:10px; margin-right:10px;">
-            ${imageUrl}
-              <a style = "color: white; font-size:14px;text-decoration: none;" href="${el
-                  .find("link")
-                  .text()}" target="_blank" rel="noopener">
-                ${el.find("title").text()}
-              </a>
+              <article style="margin-left:10px; margin-right:10px;">            
+                  <a style = "color: white; font-size:14px;text-decoration: none;" href="${el
+                      .find("link")
+                     .text()}" target="_blank" rel="noopener">
+                     ${imageUrl}
+                  ${el.find("title").text()}
+                 </a>
               <hr style="border-color:#ffb700;">
           </article>
         `;
@@ -140,7 +137,60 @@ export class AppComponent implements OnInit {
           });
       }
     });
+  }
 
+  openNav(e) {
+    this.isCountryNewsExpanded = true;
+    e.target.style.visibility = "hidden";
+    document.getElementById("countryNewsSideBar").classList.remove("collapsed");
+    document.getElementById("countryNewsSideBar").classList.add("expanded");
+
+    (<any>document.getElementsByClassName("closebtn")[0]).style.visibility = "visible";
+    document.getElementById("mapDiv").classList.add("collapsed");
+    document.getElementById("mapDiv").classList.remove("expanded");
+    $('#world-map').empty();
+    this.showMap();
+    this.drawChart(this.selectedCountryCovidData);
+    this.fillCountryNews();
+  }
+
+  private fillCountryNews(): void {
+    $(".countryNewsFeed").empty();
+
+    if (this.selectedCountryNews && this.selectedCountryNews.news) {
+      this.selectedCountryNews.news.forEach(element => {
+
+        var imageUrl = "";
+        if (element.images && element.images.length > 0) {
+          imageUrl = `<img src="${element.images[0].url}" alt="" style="width:100%; height:150px;">`;
+        }
+
+        const template = `
+      <article style="margin-left:10px; margin-right:10px;">
+          <a style = "color: white; font-size:14px;text-decoration: none;" href="${element.webUrl.trim()}" target="_blank" rel="noopener">
+          ${imageUrl}
+            ${element.title.trim()}
+          </a>
+          <hr style="border-color:#ffb700;">
+      </article>
+    `;
+
+        $(".countryNewsFeed").append(template);
+      });
+    }
+  }
+
+  closeNav() {
+    (<any>document.getElementsByClassName("closebtn")[0]).style.visibility = "hidden";
+    (<any>document.getElementsByClassName("openbtn")[0]).style.visibility = "visible";
+    this.isCountryNewsExpanded = false;
+    document.getElementById("countryNewsSideBar").classList.add("collapsed");
+    document.getElementById("countryNewsSideBar").classList.remove("expanded");
+    document.getElementById("mapDiv").classList.remove("collapsed");
+    document.getElementById("mapDiv").classList.add("expanded");
+    $('#world-map').empty();
+    this.showMap();
+    this.drawChart(this.selectedCountryCovidData);
   }
 
   private showMap() {
@@ -179,7 +229,7 @@ export class AppComponent implements OnInit {
           selectedHover: {
           }
         },
-        selectedRegions: "JO",
+        selectedRegions: this.selectedCountry.ISO2,
         regionLabelStyle: {
           initial: {
             'font-family': 'Verdana',
@@ -200,43 +250,67 @@ export class AppComponent implements OnInit {
       this.countriesSummary = res;
       this.countriesSummary.Countries.forEach(c => this.countriesConfirmedCases[c.CountryCode] = c.TotalConfirmed);
       if (!this.countriesConfirmedCases["CN"]) {
-          let country: Country = this.countries.filter(c => c.ISO2 == "CN")[0];
-          this._covidDataService.getCountryCovidData(country.Slug).subscribe(res => {
-          this.countriesConfirmedCases["CN"]  = res[res.length - 1].Confirmed;
+        let country: Country = this.countries.filter(c => c.ISO2 == "CN")[0];
+        this._covidDataService.getCountryCovidData(country.Slug).subscribe(res => {
+          this.countriesConfirmedCases["CN"] = res[res.length - 1].Confirmed;
           this.showMap();
-          this.drawNewWorldTotalsChart();          
+          this.drawNewWorldTotalsChart();
         });
       }
-      else{ 
-         this.showMap();
-         this.drawNewWorldTotalsChart();
+      else {
+        this.showMap();
+        this.drawNewWorldTotalsChart();
       }
     });
   }
 
-  onMapCountrySelected(e: any, code: string, isSelected: boolean, selectedRegions: Array<string>) {
+  private onMapCountrySelected(e: any, code: string, isSelected: boolean, selectedRegions: Array<string>) {
     if (isSelected) {
 
+      this.selectedCountryNews = null;
+
       if (this.countries) {
-        let country: Country = this.countries.filter(c => c.ISO2 == code)[0];
-        console.log(country);
-        this.selectedCountryDisplayName = country.Country;
-        this.getCountryCovidData(country.Slug);
+
+        this.selectedCountry = this.countries.filter(c => c.ISO2 == code)[0];
+
+        this.getCountryCovidData();
+
+        this._covidDataService.getCountryNews(this.selectedCountry.ISO2).subscribe(res => {
+
+          if (res.news && res.news.length > 0) {
+
+            this.selectedCountryNews = res;
+
+            if (this.isCountryNewsExpanded) {
+
+              this.fillCountryNews();
+
+            }
+            else {
+              (<any>document.getElementsByClassName("openbtn")[0]).style.visibility = "visible";
+            }
+          }
+          else {
+            (<any>document.getElementsByClassName("openbtn")[0]).style.visibility = "hidden";
+
+            if (this.isCountryNewsExpanded) {
+              this.closeNav();
+            }
+          }
+        });
       }
     }
   }
 
-  getCountryCovidData(selectedCountry: string) {
-    this.selectedCountryName = selectedCountry;
+  private getCountryCovidData() {
 
-    let covidData: CountryCovidData[] = [];
-
-    this._covidDataService.getCountryCovidData(this.selectedCountryName).subscribe(res => {
-      covidData = res;
-      this.drawChart(covidData);
+    this._covidDataService.getCountryCovidData(this.selectedCountry.Country).subscribe(res => {
+      this.selectedCountryCovidData = res;
+      this.drawChart(this.selectedCountryCovidData);
     });
   }
 
+  //#region Charts Draw Methods
   private drawChart(covidData: CountryCovidData[]): void {
 
     this.chartOptions = {
@@ -257,11 +331,12 @@ export class AppComponent implements OnInit {
       chart: {
         foreColor: "white",
         height: 350,
-        width: "100%",        
-        type: "line"
+        width: "100%",
+        type: "line",
+        redrawOnParentResize: true
       },
       title: {
-        text: "COVID-19 Growth - " + this.selectedCountryDisplayName,
+        text: "COVID-19 Growth - " + this.selectedCountry.Country,
         offsetY: 25,
       },
       yaxis: {
@@ -311,7 +386,7 @@ export class AppComponent implements OnInit {
 
   private drawNewWorldTotalsChart() {
     this.worldNewTotalsChartOptions = {
-      series: [this.countriesSummary.Global.NewConfirmed - this.countriesSummary.Global.NewRecovered - this.countriesSummary.Global.NewDeaths , this.countriesSummary.Global.NewRecovered, this.countriesSummary.Global.NewDeaths],
+      series: [this.countriesSummary.Global.NewConfirmed - this.countriesSummary.Global.NewRecovered - this.countriesSummary.Global.NewDeaths, this.countriesSummary.Global.NewRecovered, this.countriesSummary.Global.NewDeaths],
       chart: {
         width: "100%",
         type: "donut",
@@ -358,4 +433,5 @@ export class AppComponent implements OnInit {
       }
     };
   }
+  //#endregion
 }

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Country } from './models/Country';
 import { WorldTotals } from './models/WorldTotals';
 import { CountrySummary } from './models/CountrySummary';
+import { CountryNews } from './models/CountryNews';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,22 @@ export class CovidDataService {
     };
 
     return this.httpClientModule.get<any>(this._getCountryCovidData, requestOptions);
+  }
+
+  getCountryNews(countryCode: string) : Observable<CountryNews>{
+    this._getCountryCovidData = `https://api.smartable.ai/coronavirus/news/${countryCode}`;
+
+    var headers: { [name: string]: string } = {};
+
+    headers['Content-Type'] = 'application/json';
+
+    headers['Accept'] = 'application/json';
+
+    headers['Subscription-Key'] = '3009d4ccc29e4808af1ccc25c69b4d5d';
+
+    let options = { headers: new HttpHeaders(headers) };
+
+    return this.httpClientModule.get<CountryNews>(this._getCountryCovidData, options);
   }
 
   getWorldTotals(): Observable<WorldTotals> {

@@ -1,4 +1,42 @@
-.newsFeed{
+.openbtn {
+    font-size: 15px;
+    cursor: pointer;
+    background-color:#ffb700;
+    color: black;
+    padding: 10px 15px;
+    border: none;
+  }
+  
+  .openbtn:hover {
+    background-color: #444;
+  }
+
+  .countryNewsSideBar {
+    float: left; height: 100%; width: 0px;
+    transition: 0.3s;
+  }
+  
+  .countryNewsSideBar a {
+    padding: 8px 8px 8px 32px;
+    font-size: 25px;
+    color: #818181;
+    display: block;    
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #f1f1f1;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .countryNewsSideBar .closebtn { 
+    visibility: hidden;
+    font-size: 36px;
+    float: right;
+  }
+
+.newsFeed, .countryNewsFeed{
     margin-top: 20px;
      height: calc(100% - 100px);
      overflow: scroll;
@@ -34,7 +72,7 @@
 
 #world-map{
     width: 100%;
-    height: calc(100% - 350px);
+    height: calc(100% - 400px);
 }
 
 .pieChart{
@@ -44,7 +82,30 @@
     width: 90%
 }
 
+#mapDiv.collapsed{
+  width : calc(100% - 250px);
+}
+#mapDiv.expanded{
+  width : 100%;
+}
+
+.countryNewsSideBar.collapsed{
+  width : 0px;
+}
+
+.countryNewsSideBar.expanded{
+  width : 250px;
+}
+
 @media only screen and (max-width: 700px) {
+  #mapDiv.collapsed{
+    width : 0px;
+  }
+
+  .countryNewsSideBar.expanded{
+    width : 100%;
+  }
+
     .d0, .d1 , .d2{
         width: 100%;
         border-radius: 0px;
