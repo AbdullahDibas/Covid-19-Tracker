@@ -64,6 +64,7 @@ export class AppComponent implements OnInit {
   worldTotals: WorldTotals;
   selectedCountryNews: CountryNews;
   isCountryNewsExpanded: boolean = false;
+  worldMap: any;
   //#endregion
 
   constructor(private _covidDataService: CovidDataService) {
@@ -73,7 +74,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.covidDataSVC.getCountries().subscribe(res => this.countries = res);
+    this.covidDataSVC.getCountries().subscribe(res => this.countries = res.sort(function (a, b) {
+      if (a.Country < b.Country) { return -1; }
+      if (a.Country > b.Country) { return 1; }
+      return 0;
+    }));
 
     this.covidDataSVC.getWorldTotals().subscribe(res => {
 
@@ -123,8 +128,8 @@ export class AppComponent implements OnInit {
               const template = `
               <article style="margin-left:10px; margin-right:10px;">            
                   <a style = "color: white; font-size:14px;text-decoration: none;" href="${el
-                      .find("link")
-                     .text()}" target="_blank" rel="noopener">
+                  .find("link")
+                  .text()}" target="_blank" rel="noopener">
                      ${imageUrl}
                   ${el.find("title").text()}
                  </a>
@@ -205,7 +210,7 @@ export class AppComponent implements OnInit {
           }]
         },
         onRegionTipShow: function (e, el, code) {
-          el.html(el.html() + ' (Confirmed Cases - ' + this.countriesConfirmedCases[code] + ')');
+          el.html(el.html() + '<br\> Confirmed Count : ' + this.countriesConfirmedCases[code] + ' <br\> Recovery Rate : ' + this.getRecoveryRate(code));
         }.bind(this),
         backgroundColor: 'black',
         regionsSelectable: true,
@@ -245,6 +250,17 @@ export class AppComponent implements OnInit {
       });
   }
 
+  private getRecoveryRate(countryCode: string): string {
+    var country = this.countriesSummary.Countries.filter(c => c.CountryCode == countryCode)[0];
+
+    if (country && country.TotalConfirmed != 0) {
+      return (country.TotalRecovered / country.TotalConfirmed * 100).toFixed(2) + ' %';
+    }
+    else {
+      return " - ";
+    }
+  }
+
   private getCountriesConfirmedCases(): void {
     this._covidDataService.getCountriesSummaries().subscribe(res => {
       this.countriesSummary = res;
@@ -262,6 +278,14 @@ export class AppComponent implements OnInit {
         this.drawNewWorldTotalsChart();
       }
     });
+  }
+
+  onCountrySelected(selectedCountryCode: string) {
+    if (selectedCountryCode && selectedCountryCode != "") {
+      this.worldMap = $('#world-map').vectorMap('get', 'mapObject');
+      this.worldMap.clearSelectedRegions();
+      this.worldMap.setSelectedRegions(selectedCountryCode);
+    }
   }
 
   private onMapCountrySelected(e: any, code: string, isSelected: boolean, selectedRegions: Array<string>) {
