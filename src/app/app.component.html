@@ -11,7 +11,7 @@
       <div>
       <button class="openbtn" (click)="openNav($event)" style="visibility:hidden">☰ Country News</button>
       <select id="countriesSelect" (change) = "onCountrySelected($event.target.value)" value = "{{selectedCountry.ISO2}}">
-        <option *ngFor="let country of countries" value = "{{country.ISO2}}"> 
+        <option *ngFor="let country of countries" value = "{{country.ISO2}}" [selected] = "selectedCountry.ISO2 == country.ISO2"> 
            {{country.Country}}
         </option>
       </select>

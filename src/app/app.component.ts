@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
 
   //#region Declarations
   covidDataSVC: CovidDataService;
-  selectedCountry: Country;
+  selectedCountry: Country = { Slug: "jordan", ISO2: "JO", Country: "Jordan" };
   countries: Country[];
   selectedCountryCovidData: CountryCovidData[] = [];
   countriesSummary: CountrySummary;
