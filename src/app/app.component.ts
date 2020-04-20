@@ -285,6 +285,7 @@ export class AppComponent implements OnInit {
       this.worldMap = $('#world-map').vectorMap('get', 'mapObject');
       this.worldMap.clearSelectedRegions();
       this.worldMap.setSelectedRegions(selectedCountryCode);
+      this.worldMap.setFocus({region: selectedCountryCode});
     }
   }
 
