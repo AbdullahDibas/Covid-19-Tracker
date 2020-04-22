@@ -90,7 +90,8 @@ export class AppComponent implements OnInit {
     this.getCountryCovidData();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {  
+
     this.getCountriesConfirmedCases();
 
     this.initializeWHOLatestNews();

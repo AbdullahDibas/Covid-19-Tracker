@@ -43,7 +43,9 @@ export class CovidDataService {
 
     headers['Accept'] = 'application/json';
 
-    headers['Subscription-Key'] = '3009d4ccc29e4808af1ccc25c69b4d5d';
+   // headers['Subscription-Key'] = '3009d4ccc29e4808af1ccc25c69b4d5d';
+    
+    headers['Subscription-Key'] = '97e63e0b1c8341f5bc64efd71ca732fd';
 
     let options = { headers: new HttpHeaders(headers) };
 
