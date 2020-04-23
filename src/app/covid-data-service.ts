@@ -6,6 +6,7 @@ import { Country } from './models/Country';
 import { WorldTotals } from './models/WorldTotals';
 import { CountrySummary } from './models/CountrySummary';
 import { CountryNews } from './models/CountryNews';
+import { CountriesTotalsDetails } from './models/CountriesTotalsDetails';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,12 @@ export class CovidDataService {
   _getCountryCovidData: string = "";
 
   constructor(private httpClientModule: HttpClient) { }
+
+  getCountriesDetails(): Observable<CountriesTotalsDetails> {
+    this._getCountryCovidData = `https://corona-virus-stats.herokuapp.com/api/v1/cases/countries-search?limit=217&page=1`;
+
+    return this.httpClientModule.get<CountriesTotalsDetails>(this._getCountryCovidData, this.getRequestOptions());
+  }
 
   getWHONewsFeed(): Observable<any> {
     this._getCountryCovidData = `http://news.google.com/news?q=covid-19&hl=en-US&sort=date&gl=US&num=100&output=rss`;

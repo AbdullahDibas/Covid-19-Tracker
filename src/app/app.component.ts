@@ -19,6 +19,7 @@ import { Country } from './models/Country';
 import { WorldTotals } from './models/WorldTotals';
 import { CountrySummary } from './models/CountrySummary';
 import { CountryNews } from './models/CountryNews';
+import { CountriesTotalsDetails } from './models/CountriesTotalsDetails';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -57,6 +58,7 @@ export class AppComponent implements OnInit {
   //#region Declarations
   covidDataSVC: CovidDataService;
   selectedCountry: Country = { Slug: "jordan", ISO2: "JO", Country: "Jordan" };
+  countriesTotalsDetails : CountriesTotalsDetails;
   countries: Country[];
   selectedCountryCovidData: CountryCovidData[] = [];
   countriesSummary: CountrySummary;
@@ -95,6 +97,11 @@ export class AppComponent implements OnInit {
     this.getCountriesConfirmedCases();
 
     this.initializeWHOLatestNews();
+
+    this._covidDataService.getCountriesDetails().subscribe(res => {
+       this.countriesTotalsDetails = res;
+    });
+
   }
 
   private initializeWHOLatestNews(): void {
@@ -211,7 +218,7 @@ export class AppComponent implements OnInit {
           }]
         },
         onRegionTipShow: function (e, el, code) {
-          el.html(el.html() + '<br\> Confirmed Count : ' + this.countriesConfirmedCases[code] + ' <br\> Recovery Rate : ' + this.getRecoveryRate(code));
+          el.html(el.html() + this.getTooltipText(code));
         }.bind(this),
         backgroundColor: 'black',
         regionsSelectable: true,
@@ -251,6 +258,25 @@ export class AppComponent implements OnInit {
       });
   }
 
+  private getTooltipText(countryCode: string): string {
+    return   this.getCountryImage(countryCode) + ' <hr> '
+     +  '<br\> Confirmed Count : ' + this.countriesConfirmedCases[countryCode]
+     + ' <br\> Recovery Rate : ' + this.getRecoveryRate(countryCode) 
+     + ' <br\> Deaths Rate : ' + this.getDeathsRate(countryCode)
+     + ' <br\> Total Cases / 1 M pop : ' + this.getCasesPerMillion(countryCode);   
+  }
+
+  private getCountryImage(countryCode: string): string {
+    var countryTotalsDetails = this.countriesTotalsDetails.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
+
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return `<img src="${countryTotalsDetails.flag}" alt="" style="width:25px; height:15px; float:right">`; 
+    }
+    else {
+      return " - ";
+    }
+  }
+
   private getRecoveryRate(countryCode: string): string {
     var country = this.countriesSummary.Countries.filter(c => c.CountryCode == countryCode)[0];
 
@@ -261,6 +287,28 @@ export class AppComponent implements OnInit {
       return " - ";
     }
   }
+
+  private getDeathsRate(countryCode: string): string {
+    var country = this.countriesSummary.Countries.filter(c => c.CountryCode == countryCode)[0];
+
+    if (country && country.TotalConfirmed != 0) {
+      return (country.TotalDeaths / country.TotalConfirmed * 100).toFixed(2) + ' %';
+    }
+    else {
+      return " - ";
+    }
+  }
+  
+ private getCasesPerMillion(countryCode: string) : string {
+    var countryTotalsDetails = this.countriesTotalsDetails.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
+
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return countryTotalsDetails.cases_per_mill_pop;
+    }
+    else {
+      return " - ";
+    }
+ }
 
   private getCountriesConfirmedCases(): void {
     this._covidDataService.getCountriesSummaries().subscribe(res => {
