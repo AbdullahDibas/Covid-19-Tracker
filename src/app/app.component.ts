@@ -263,17 +263,17 @@ export class AppComponent implements OnInit {
      +  '<br\> Confirmed Count : ' + this.countriesConfirmedCases[countryCode]
      + ' <br\> Recovery Rate : ' + this.getRecoveryRate(countryCode) 
      + ' <br\> Deaths Rate : ' + this.getDeathsRate(countryCode)
-     + ' <br\> Total Cases / 1 M pop : ' + this.getCasesPerMillion(countryCode);   
+     + (this.countriesTotalsDetails ? ' <br\> Total Cases / 1 M pop : ' + this.getCasesPerMillion(countryCode) : '');   
   }
 
   private getCountryImage(countryCode: string): string {
-    var countryTotalsDetails = this.countriesTotalsDetails.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
+    var countryTotalsDetails = this.countriesTotalsDetails?.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
 
     if (countryTotalsDetails && countryTotalsDetails != null) {
       return `<img src="${countryTotalsDetails.flag}" alt="" style="width:25px; height:15px; float:right">`; 
     }
     else {
-      return " - ";
+      return "";
     }
   }
 
@@ -300,7 +300,7 @@ export class AppComponent implements OnInit {
   }
   
  private getCasesPerMillion(countryCode: string) : string {
-    var countryTotalsDetails = this.countriesTotalsDetails.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
+    var countryTotalsDetails = this.countriesTotalsDetails?.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
 
     if (countryTotalsDetails && countryTotalsDetails != null) {
       return countryTotalsDetails.cases_per_mill_pop;
