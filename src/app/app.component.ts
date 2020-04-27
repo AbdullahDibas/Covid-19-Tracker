@@ -19,7 +19,7 @@ import { Country } from './models/Country';
 import { WorldTotals } from './models/WorldTotals';
 import { CountrySummary } from './models/CountrySummary';
 import { CountryNews } from './models/CountryNews';
-import { CountriesTotalsDetails } from './models/CountriesTotalsDetails';
+import { CountriesTotalsDetails, CountriesTotalsDetailss } from './models/CountriesTotalsDetails';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -59,6 +59,7 @@ export class AppComponent implements OnInit {
   covidDataSVC: CovidDataService;
   selectedCountry: Country = { Slug: "jordan", ISO2: "JO", Country: "Jordan" };
   countriesTotalsDetails : CountriesTotalsDetails;
+  countriesTotalsDetailss : CountriesTotalsDetailss[];
   countries: Country[];
   selectedCountryCovidData: CountryCovidData[] = [];
   countriesSummary: CountrySummary;
@@ -98,10 +99,14 @@ export class AppComponent implements OnInit {
 
     this.initializeWHOLatestNews();
 
+    this._covidDataService.getCountriesDetailss().subscribe(res => {
+      console.log(res);
+      this.countriesTotalsDetailss = res;
+   });
+
     this._covidDataService.getCountriesDetails().subscribe(res => {
        this.countriesTotalsDetails = res;
     });
-
   }
 
   private initializeWHOLatestNews(): void {
@@ -260,17 +265,40 @@ export class AppComponent implements OnInit {
 
   private getTooltipText(countryCode: string): string {
     return   this.getCountryImage(countryCode) + ' <hr> '
-     +  '<br\> Confirmed Count : ' + this.countriesConfirmedCases[countryCode]
-     + ' <br\> Recovery Rate : ' + this.getRecoveryRate(countryCode) 
-     + ' <br\> Deaths Rate : ' + this.getDeathsRate(countryCode)
-     + (this.countriesTotalsDetails ? ' <br\> Total Cases / 1 M pop : ' + this.getCasesPerMillion(countryCode) : '');   
+     +  '<br\> Today Cases Count : <span style="float:right; font-size:12px; color:gold;">' + this.getTodayCasesCount(countryCode) + '</span>'
+     +  '<br\> Total Cases Count : <span style="float:right; font-size:12px; color:gold;">'  + this.getConfirmedCount(countryCode)+ '</span>'
+     + (this.countriesTotalsDetailss ? ' <br\> Total Cases / 1 M pop : <span style="float:right; font-size:12px; color:gold;">'  + this.getCasesPerMillion(countryCode)+ '</span>' : '')
+     + ' <br\> Recovery Rate : <span style="float:right; font-size:12px; color:gold;">'  + this.getRecoveryRate(countryCode) + '</span>'
+     + ' <br\> Deaths Rate : <span style="float:right; font-size:12px; color:gold;">'  + this.getDeathsRate(countryCode)+ '</span>';   
   }
 
+private getConfirmedCount(countryCode: string){
+  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+
+  if (countryTotalsDetails && countryTotalsDetails != null) {
+    return countryTotalsDetails.cases.toString();
+  }
+  else {
+    return " - ";
+  }
+}
+
+private getTodayCasesCount(countryCode: string){
+  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+
+  if (countryTotalsDetails && countryTotalsDetails != null) {
+    return countryTotalsDetails.todayCases.toString();
+  }
+  else {
+    return " - ";
+  }
+}
+
   private getCountryImage(countryCode: string): string {
-    var countryTotalsDetails = this.countriesTotalsDetails?.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
     if (countryTotalsDetails && countryTotalsDetails != null) {
-      return `<img src="${countryTotalsDetails.flag}" alt="" style="width:25px; height:15px; float:right">`; 
+      return `<img src="${countryTotalsDetails.countryInfo.flag}" alt="" style="width:25px; height:15px; float:right">`; 
     }
     else {
       return "";
@@ -300,10 +328,10 @@ export class AppComponent implements OnInit {
   }
   
  private getCasesPerMillion(countryCode: string) : string {
-    var countryTotalsDetails = this.countriesTotalsDetails?.data.rows.filter(r => r.country_abbreviation == countryCode)[0];
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
     if (countryTotalsDetails && countryTotalsDetails != null) {
-      return countryTotalsDetails.cases_per_mill_pop;
+      return countryTotalsDetails.casesPerOneMillion.toString();
     }
     else {
       return " - ";
