@@ -360,7 +360,7 @@ private getTodayCasesCount(countryCode: string){
   onCountrySelected(selectedCountryName: any) {
 
     let selectedCountryCode = this.getCountyCode(selectedCountryName);
-    
+
     if (selectedCountryCode && selectedCountryCode != "") {
       this.worldMap = $('#world-map').vectorMap('get', 'mapObject');
       this.worldMap.clearSelectedRegions();
@@ -408,6 +408,8 @@ private getTodayCasesCount(countryCode: string){
           }
         });
       }
+       // to remove the focus from countries input control
+       $('#countriesSelectInput').blur();
     }
   }
 
