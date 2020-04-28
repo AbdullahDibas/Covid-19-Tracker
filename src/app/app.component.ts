@@ -357,13 +357,20 @@ private getTodayCasesCount(countryCode: string){
     });
   }
 
-  onCountrySelected(selectedCountryCode: string) {
+  onCountrySelected(selectedCountryName: any) {
+
+    let selectedCountryCode = this.getCountyCode(selectedCountryName);
+    
     if (selectedCountryCode && selectedCountryCode != "") {
       this.worldMap = $('#world-map').vectorMap('get', 'mapObject');
       this.worldMap.clearSelectedRegions();
       this.worldMap.setSelectedRegions(selectedCountryCode);
       this.worldMap.setFocus({region: selectedCountryCode});
     }
+  }
+
+  private getCountyCode(countryName : string) :string{ 
+    return this.countries.filter(c => c.Country == countryName)[0].ISO2;
   }
 
   private onMapCountrySelected(e: any, code: string, isSelected: boolean, selectedRegions: Array<string>) {
