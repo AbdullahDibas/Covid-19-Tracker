@@ -215,6 +215,7 @@ export class AppComponent implements OnInit {
     $('#world-map').vectorMap(
       {
         map: 'world_merc',
+        zoomMax: 30,
         series: {
           regions: [{
             values: this.countriesConfirmedCases,
@@ -265,11 +266,12 @@ export class AppComponent implements OnInit {
 
   private getTooltipText(countryCode: string): string {
     return   this.getCountryImage(countryCode) + ' <hr> '
-     +  '<br\> Today Cases Count : <span style="float:right; font-size:12px; color:gold;">' + this.getTodayCasesCount(countryCode) + '</span>'
-     +  '<br\> Total Cases Count : <span style="float:right; font-size:12px; color:gold;">'  + this.getConfirmedCount(countryCode)+ '</span>'
-     + (this.countriesTotalsDetailss ? ' <br\> Total Cases / 1 M pop : <span style="float:right; font-size:12px; color:gold;">'  + this.getCasesPerMillion(countryCode)+ '</span>' : '')
-     + ' <br\> Recovery Rate : <span style="float:right; font-size:12px; color:gold;">'  + this.getRecoveryRate(countryCode) + '</span>'
-     + ' <br\> Deaths Rate : <span style="float:right; font-size:12px; color:gold;">'  + this.getDeathsRate(countryCode)+ '</span>';   
+     +  '<br\> Today Cases Count:  <span style="float:right; font-size:12px; color:gold;"> ' + this.getTodayCasesCount(countryCode) + '</span>'
+     +  '<br\> Today Deaths Count:  <span style="float:right; font-size:12px; color:gold;"> ' + this.getTodayDeathsCount(countryCode) + '</span>'
+     +  '<br\> Total Cases Count:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getConfirmedCount(countryCode)+ '</span>'
+     + (this.countriesTotalsDetailss ? ' <br\> Total Cases / 1 M pop:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getCasesPerMillion(countryCode)+ '</span>' : '')
+     + ' <br\> Recovery Rate:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getRecoveryRate(countryCode) + '</span>'
+     + ' <br\> Deaths Rate:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getDeathsRate(countryCode)+ '</span>';   
   }
 
 private getConfirmedCount(countryCode: string){
@@ -288,6 +290,17 @@ private getTodayCasesCount(countryCode: string){
 
   if (countryTotalsDetails && countryTotalsDetails != null) {
     return countryTotalsDetails.todayCases.toString();
+  }
+  else {
+    return " - ";
+  }
+}
+
+private getTodayDeathsCount(countryCode: string){
+  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+
+  if (countryTotalsDetails && countryTotalsDetails != null) {
+    return countryTotalsDetails.todayDeaths.toString();
   }
   else {
     return " - ";

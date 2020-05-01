@@ -10,7 +10,7 @@
     <div id="mapDiv" class="expanded" style="float: left; height: 100%;">
       <div>
       <button class="openbtn" (click)="openNav($event)" style="visibility:hidden">☰ Country News</button>
-      <input list="countriesSelect" id="countriesSelectInput" name="countriesSelectInput" value = "{{selectedCountry.Country}}" (change) = "onCountrySelected($event.target.value)"/>
+      <input list="countriesSelect" id="countriesSelectInput" (click) = "$event.target.select();"  name="countriesSelectInput" value = "{{selectedCountry.Country}}" (change) = "onCountrySelected($event.target.value)"/>
       <datalist id="countriesSelect">
         <option *ngFor="let country of countries" data-value = "{{country.Country}}" [selected] = "selectedCountry.ISO2 == country.ISO2"></option>
       </datalist>

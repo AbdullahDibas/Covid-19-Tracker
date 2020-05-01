@@ -97,6 +97,10 @@
   width : 250px;
 }
 
+span{
+   white-space: pre; 
+}
+
 #countriesSelectInput{
   float: right;
   width: 150px;
