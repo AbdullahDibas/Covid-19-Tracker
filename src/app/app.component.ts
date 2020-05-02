@@ -266,19 +266,50 @@ export class AppComponent implements OnInit {
 
   private getTooltipText(countryCode: string): string {
     return   this.getCountryImage(countryCode) + ' <hr> '
-     +  '<br\> Today Cases Count:  <span style="float:right; font-size:12px; color:gold;"> ' + this.getTodayCasesCount(countryCode) + '</span>'
-     +  '<br\> Today Deaths Count:  <span style="float:right; font-size:12px; color:gold;"> ' + this.getTodayDeathsCount(countryCode) + '</span>'
-     +  '<br\> Total Cases Count:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getConfirmedCount(countryCode)+ '</span>'
-     + (this.countriesTotalsDetailss ? ' <br\> Total Cases / 1 M pop:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getCasesPerMillion(countryCode)+ '</span>' : '')
-     + ' <br\> Recovery Rate:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getRecoveryRate(countryCode) + '</span>'
-     + ' <br\> Deaths Rate:  <span style="float:right; font-size:12px; color:gold;"> '  + this.getDeathsRate(countryCode)+ '</span>';   
+     +  this.getTooltipLine('Total Cases', this.getConfirmedCount(countryCode))
+     + (this.countriesTotalsDetailss ? '<br\>' + this.getTooltipLine('Total Cases / 1 M pop', this.getCasesPerMillion(countryCode)) : '')
+     +  '<br\>' +this.getTooltipLine('Total Recovered', this.getRecoveredCount(countryCode))
+     +  '<br\>' +this.getTooltipLine('Total Deaths', this.getDeathsCount(countryCode))
+     + "<hr class='dashedHr'> "
+     +  this.getTooltipLine('New Cases', this.getTodayCasesCount(countryCode))
+     +  '<br\>' +this.getTooltipLine('New Deaths', this.getTodayDeathsCount(countryCode))
+     + "<hr class='dashedHr'> "
+     +  this.getTooltipLine('Recovery Rate', this.getRecoveryRate(countryCode))
+     + '<br\>' + this.getTooltipLine('Deaths Rate', this.getDeathsRate(countryCode))     
+  }
+
+  private getTooltipLine(dataName: string, dataValue: string):string {
+       return `${dataName}:  <span class="tooltipSpan"> ${dataValue}</span>`;
   }
 
 private getConfirmedCount(countryCode: string){
   var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
   if (countryTotalsDetails && countryTotalsDetails != null) {
-    return countryTotalsDetails.cases.toString();
+    return this.formatNumber(countryTotalsDetails.cases);
+   //  + (this.countriesTotalsDetailss ? ' (' + this.getCasesPerMillion(countryCode) + ' 1 M pop )' : '');
+  }
+  else {
+    return " - ";
+  }
+}
+
+private getRecoveredCount(countryCode: string){
+  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+
+  if (countryTotalsDetails && countryTotalsDetails != null) {
+    return this.formatNumber(countryTotalsDetails.recovered);
+  }
+  else {
+    return " - ";
+  }
+}
+
+private getDeathsCount(countryCode: string){
+  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+
+  if (countryTotalsDetails && countryTotalsDetails != null) {
+    return this.formatNumber(countryTotalsDetails.deaths);
   }
   else {
     return " - ";
@@ -289,7 +320,7 @@ private getTodayCasesCount(countryCode: string){
   var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
   if (countryTotalsDetails && countryTotalsDetails != null) {
-    return countryTotalsDetails.todayCases.toString();
+    return this.formatNumber(countryTotalsDetails.todayCases);
   }
   else {
     return " - ";
@@ -300,7 +331,7 @@ private getTodayDeathsCount(countryCode: string){
   var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
   if (countryTotalsDetails && countryTotalsDetails != null) {
-    return countryTotalsDetails.todayDeaths.toString();
+    return  this.formatNumber(countryTotalsDetails.todayDeaths);
   }
   else {
     return " - ";
@@ -350,6 +381,10 @@ private getTodayDeathsCount(countryCode: string){
       return " - ";
     }
  }
+
+  private formatNumber(x): string{
+     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   private getCountriesConfirmedCases(): void {
     this._covidDataService.getCountriesSummaries().subscribe(res => {
