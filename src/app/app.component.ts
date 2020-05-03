@@ -94,14 +94,12 @@ export class AppComponent implements OnInit {
   }
 
   ngAfterViewInit() {  
-
-    this.getCountriesConfirmedCases();
-
     this.initializeWHOLatestNews();
 
     this._covidDataService.getCountriesDetailss().subscribe(res => {
       console.log(res);
       this.countriesTotalsDetailss = res;
+      this.getCountriesConfirmedCases();
    });
 
     this._covidDataService.getCountriesDetails().subscribe(res => {
@@ -350,10 +348,10 @@ private getTodayDeathsCount(countryCode: string){
   }
 
   private getRecoveryRate(countryCode: string): string {
-    var country = this.countriesSummary.Countries.filter(c => c.CountryCode == countryCode)[0];
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-    if (country && country.TotalConfirmed != 0) {
-      return (country.TotalRecovered / country.TotalConfirmed * 100).toFixed(2) + ' %';
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return (countryTotalsDetails.recovered / countryTotalsDetails.cases * 100).toFixed(2) + ' %';
     }
     else {
       return " - ";
@@ -361,10 +359,10 @@ private getTodayDeathsCount(countryCode: string){
   }
 
   private getDeathsRate(countryCode: string): string {
-    var country = this.countriesSummary.Countries.filter(c => c.CountryCode == countryCode)[0];
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-    if (country && country.TotalConfirmed != 0) {
-      return (country.TotalDeaths / country.TotalConfirmed * 100).toFixed(2) + ' %';
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return (countryTotalsDetails.deaths / countryTotalsDetails.cases * 100).toFixed(2) + ' %';
     }
     else {
       return " - ";
@@ -387,22 +385,25 @@ private getTodayDeathsCount(countryCode: string){
   }
 
   private getCountriesConfirmedCases(): void {
-    this._covidDataService.getCountriesSummaries().subscribe(res => {
-      this.countriesSummary = res;
-      this.countriesSummary.Countries.forEach(c => this.countriesConfirmedCases[c.CountryCode] = c.TotalConfirmed);
-      if (!this.countriesConfirmedCases["CN"]) {
-        let country: Country = this.countries.filter(c => c.ISO2 == "CN")[0];
-        this._covidDataService.getCountryCovidData(country.Slug).subscribe(res => {
-          this.countriesConfirmedCases["CN"] = res[res.length - 1].Confirmed;
-          this.showMap();
-          this.drawNewWorldTotalsChart();
-        });
-      }
-      else {
-        this.showMap();
-        this.drawNewWorldTotalsChart();
-      }
-    });
+    this.countriesTotalsDetailss.forEach(c =>this.countriesConfirmedCases[c.countryInfo.iso2] = c.cases);
+    this.showMap();
+    this.drawNewWorldTotalsChart();
+    // this._covidDataService.getCountriesSummaries().subscribe(res => {
+    //   this.countriesSummary = res;
+    //   this.countriesSummary.Countries.forEach(c => this.countriesConfirmedCases[c.CountryCode] = c.TotalConfirmed);
+    //   if (!this.countriesConfirmedCases["CN"]) {
+    //     let country: Country = this.countries.filter(c => c.ISO2 == "CN")[0];
+    //     this._covidDataService.getCountryCovidData(country.Slug).subscribe(res => {
+    //       this.countriesConfirmedCases["CN"] = res[res.length - 1].Confirmed;
+    //       this.showMap();
+    //       this.drawNewWorldTotalsChart();
+    //     });
+    //   }
+    //   else {
+    //     this.showMap();
+    //     this.drawNewWorldTotalsChart();
+    //   }
+    // });
   }
 
   onCountrySelected(selectedCountryName: any) {
