@@ -58,8 +58,8 @@ export class AppComponent implements OnInit {
   //#region Declarations
   covidDataSVC: CovidDataService;
   selectedCountry: Country = { Slug: "jordan", ISO2: "JO", Country: "Jordan" };
-  countriesTotalsDetails : CountriesTotalsDetails;
-  countriesTotalsDetailss : CountriesTotalsDetailss[];
+  countriesTotalsDetails: CountriesTotalsDetails;
+  countriesTotalsDetailss: CountriesTotalsDetailss[];
   countries: Country[];
   selectedCountryCovidData: CountryCovidData[] = [];
   countriesSummary: CountrySummary;
@@ -93,17 +93,17 @@ export class AppComponent implements OnInit {
     this.getCountryCovidData();
   }
 
-  ngAfterViewInit() {  
+  ngAfterViewInit() {
     this.initializeWHOLatestNews();
 
     this._covidDataService.getCountriesDetailss().subscribe(res => {
       console.log(res);
       this.countriesTotalsDetailss = res;
       this.getCountriesConfirmedCases();
-   });
+    });
 
     this._covidDataService.getCountriesDetails().subscribe(res => {
-       this.countriesTotalsDetails = res;
+      this.countriesTotalsDetails = res;
     });
   }
 
@@ -263,84 +263,84 @@ export class AppComponent implements OnInit {
   }
 
   private getTooltipText(countryCode: string): string {
-    return   this.getCountryImage(countryCode) + ' <hr> '
-     +  this.getTooltipLine('Total Cases', this.getConfirmedCount(countryCode))
-     + (this.countriesTotalsDetailss ? '<br\>' + this.getTooltipLine('Total Cases / 1 M pop', this.getCasesPerMillion(countryCode)) : '')
-     +  '<br\>' +this.getTooltipLine('Total Recovered', this.getRecoveredCount(countryCode))
-     +  '<br\>' +this.getTooltipLine('Total Deaths', this.getDeathsCount(countryCode))
-     + "<hr class='dashedHr'> "
-     +  this.getTooltipLine('New Cases', this.getTodayCasesCount(countryCode))
-     +  '<br\>' +this.getTooltipLine('New Deaths', this.getTodayDeathsCount(countryCode))
-     + "<hr class='dashedHr'> "
-     +  this.getTooltipLine('Recovery Rate', this.getRecoveryRate(countryCode))
-     + '<br\>' + this.getTooltipLine('Deaths Rate', this.getDeathsRate(countryCode))     
+    return this.getCountryImage(countryCode) + ' <hr> '
+      + this.getTooltipLine('Total Cases', this.getConfirmedCount(countryCode))
+      + (this.countriesTotalsDetailss ? '<br\>' + this.getTooltipLine('Total Cases / 1 M pop', this.getCasesPerMillion(countryCode)) : '')
+      + '<br\>' + this.getTooltipLine('Total Recovered', this.getRecoveredCount(countryCode))
+      + '<br\>' + this.getTooltipLine('Total Deaths', this.getDeathsCount(countryCode))
+      + "<hr class='dashedHr'> "
+      + this.getTooltipLine('New Cases', this.getTodayCasesCount(countryCode))
+      + '<br\>' + this.getTooltipLine('New Deaths', this.getTodayDeathsCount(countryCode))
+      + "<hr class='dashedHr'> "
+      + this.getTooltipLine('Recovery Rate', this.getRecoveryRate(countryCode))
+      + '<br\>' + this.getTooltipLine('Deaths Rate', this.getDeathsRate(countryCode))
   }
 
-  private getTooltipLine(dataName: string, dataValue: string):string {
-       return `${dataName}:  <span class="tooltipSpan"> ${dataValue}</span>`;
+  private getTooltipLine(dataName: string, dataValue: string): string {
+    return `${dataName}:  <span class="tooltipSpan"> ${dataValue}</span>`;
   }
 
-private getConfirmedCount(countryCode: string){
-  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+  private getConfirmedCount(countryCode: string) {
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-  if (countryTotalsDetails && countryTotalsDetails != null) {
-    return this.formatNumber(countryTotalsDetails.cases);
-   //  + (this.countriesTotalsDetailss ? ' (' + this.getCasesPerMillion(countryCode) + ' 1 M pop )' : '');
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return this.formatNumber(countryTotalsDetails.cases);
+      //  + (this.countriesTotalsDetailss ? ' (' + this.getCasesPerMillion(countryCode) + ' 1 M pop )' : '');
+    }
+    else {
+      return " - ";
+    }
   }
-  else {
-    return " - ";
-  }
-}
 
-private getRecoveredCount(countryCode: string){
-  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+  private getRecoveredCount(countryCode: string) {
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-  if (countryTotalsDetails && countryTotalsDetails != null) {
-    return this.formatNumber(countryTotalsDetails.recovered);
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return this.formatNumber(countryTotalsDetails.recovered);
+    }
+    else {
+      return " - ";
+    }
   }
-  else {
-    return " - ";
-  }
-}
 
-private getDeathsCount(countryCode: string){
-  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+  private getDeathsCount(countryCode: string) {
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-  if (countryTotalsDetails && countryTotalsDetails != null) {
-    return this.formatNumber(countryTotalsDetails.deaths);
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return this.formatNumber(countryTotalsDetails.deaths);
+    }
+    else {
+      return " - ";
+    }
   }
-  else {
-    return " - ";
-  }
-}
 
-private getTodayCasesCount(countryCode: string){
-  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+  private getTodayCasesCount(countryCode: string) {
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-  if (countryTotalsDetails && countryTotalsDetails != null) {
-    return this.formatNumber(countryTotalsDetails.todayCases);
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return this.formatNumber(countryTotalsDetails.todayCases);
+    }
+    else {
+      return " - ";
+    }
   }
-  else {
-    return " - ";
-  }
-}
 
-private getTodayDeathsCount(countryCode: string){
-  var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
+  private getTodayDeathsCount(countryCode: string) {
+    var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
-  if (countryTotalsDetails && countryTotalsDetails != null) {
-    return  this.formatNumber(countryTotalsDetails.todayDeaths);
+    if (countryTotalsDetails && countryTotalsDetails != null) {
+      return this.formatNumber(countryTotalsDetails.todayDeaths);
+    }
+    else {
+      return " - ";
+    }
   }
-  else {
-    return " - ";
-  }
-}
 
   private getCountryImage(countryCode: string): string {
     var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
     if (countryTotalsDetails && countryTotalsDetails != null) {
-      return `<img src="${countryTotalsDetails.countryInfo.flag}" alt="" style="width:25px; height:15px; float:right">`; 
+      return `<img src="${countryTotalsDetails.countryInfo.flag}" alt="" style="width:25px; height:15px; float:right">`;
     }
     else {
       return "";
@@ -368,8 +368,8 @@ private getTodayDeathsCount(countryCode: string){
       return " - ";
     }
   }
-  
- private getCasesPerMillion(countryCode: string) : string {
+
+  private getCasesPerMillion(countryCode: string): string {
     var countryTotalsDetails = this.countriesTotalsDetailss?.filter(r => r?.countryInfo?.iso2 == countryCode)[0];
 
     if (countryTotalsDetails && countryTotalsDetails != null) {
@@ -378,32 +378,19 @@ private getTodayDeathsCount(countryCode: string){
     else {
       return " - ";
     }
- }
+  }
 
-  private formatNumber(x): string{
-     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  private formatNumber(x): string {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   private getCountriesConfirmedCases(): void {
-    this.countriesTotalsDetailss.forEach(c =>this.countriesConfirmedCases[c.countryInfo.iso2] = c.cases);
+    this.countriesTotalsDetailss.forEach(c => this.countriesConfirmedCases[c.countryInfo.iso2] = c.cases);
     this.showMap();
-    this.drawNewWorldTotalsChart();
-    // this._covidDataService.getCountriesSummaries().subscribe(res => {
-    //   this.countriesSummary = res;
-    //   this.countriesSummary.Countries.forEach(c => this.countriesConfirmedCases[c.CountryCode] = c.TotalConfirmed);
-    //   if (!this.countriesConfirmedCases["CN"]) {
-    //     let country: Country = this.countries.filter(c => c.ISO2 == "CN")[0];
-    //     this._covidDataService.getCountryCovidData(country.Slug).subscribe(res => {
-    //       this.countriesConfirmedCases["CN"] = res[res.length - 1].Confirmed;
-    //       this.showMap();
-    //       this.drawNewWorldTotalsChart();
-    //     });
-    //   }
-    //   else {
-    //     this.showMap();
-    //     this.drawNewWorldTotalsChart();
-    //   }
-    // });
+    this._covidDataService.getCountriesSummaries().subscribe(res => {
+      this.countriesSummary = res;
+      this.drawNewWorldTotalsChart();
+    });
   }
 
   onCountrySelected(selectedCountryName: any) {
@@ -414,11 +401,11 @@ private getTodayDeathsCount(countryCode: string){
       this.worldMap = $('#world-map').vectorMap('get', 'mapObject');
       this.worldMap.clearSelectedRegions();
       this.worldMap.setSelectedRegions(selectedCountryCode);
-      this.worldMap.setFocus({region: selectedCountryCode});
+      this.worldMap.setFocus({ region: selectedCountryCode });
     }
   }
 
-  private getCountyCode(countryName : string) :string{ 
+  private getCountyCode(countryName: string): string {
     return this.countries.filter(c => c.Country == countryName)[0].ISO2;
   }
 
@@ -457,8 +444,8 @@ private getTodayDeathsCount(countryCode: string){
           }
         });
       }
-       // to remove the focus from countries input control
-       $('#countriesSelectInput').blur();
+      // to remove the focus from countries input control
+      $('#countriesSelectInput').blur();
     }
   }
 
